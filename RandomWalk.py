@@ -10,6 +10,8 @@ s.connect((ip,1337))
 
 canvas_size = 512
 
+#comment or something it soedhen hurht
+
 def clearcanvas():
     for i in range(canvas_size):
         for j in range(canvas_size):
