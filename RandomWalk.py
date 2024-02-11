@@ -338,15 +338,148 @@ def nightsky(amount):
         x = random.randrange(0,512)
         y = random.randrange(0,512)
         star_size_medium(x,y,250, 179, 97)
-        k+=120
+        k+=70
 
 
+def module1(xpix,ypix,r,g,b):
+    placepixel(xpix-1,ypix,r,g,b)
+    placepixel(xpix-1,ypix-1,r,g,b)
+    placepixel(xpix,ypix-1,r,g,b)
+    placepixel(xpix+1,ypix+1,r,g,b)
+    placepixel(xpix+1,ypix,r,g,b)
+    placepixel(xpix+1,ypix-1,r,g,b)
+    placepixel(xpix,ypix+1,r,g,b)
+    placepixel(xpix-1,ypix+1,r,g,b)
+
+def module2(xpix,ypix,r,g,b):
+    placepixel(xpix-1,ypix,r,g,b)
+    placepixel(xpix+1,ypix,r,g,b)
+    placepixel(xpix,ypix+1,r,g,b)
+    placepixel(xpix,ypix-1,r,g,b)
+
+def module3(xpix,ypix,r,g,b):
+    placepixel(xpix,ypix,r,g,b)
+    placepixel(xpix-2,ypix-2,r,g,b)
+    placepixel(xpix-2,ypix-1,r,g,b)
+    placepixel(xpix-2,ypix,r,g,b)
+    placepixel(xpix-2,ypix+1,r,g,b)
+    placepixel(xpix-2,ypix+2,r,g,b)
+    placepixel(xpix+2,ypix-2,r,g,b)
+    placepixel(xpix+2,ypix-1,r,g,b)
+    placepixel(xpix+2,ypix,r,g,b)
+    placepixel(xpix+2,ypix+1,r,g,b)
+    placepixel(xpix+2,ypix+2,r,g,b)
+    placepixel(xpix-1,ypix-2,r,g,b)
+    placepixel(xpix-1,ypix+2,r,g,b)
+    placepixel(xpix,ypix-2,r,g,b)
+    placepixel(xpix,ypix+2,r,g,b)
+    placepixel(xpix+1,ypix-2,r,g,b)
+    placepixel(xpix+1,ypix+2,r,g,b)
+    
+def module4(xpix,ypix,r,g,b):
+    placepixel(xpix,ypix,r,g,b)
+    placepixel(xpix-2,ypix-1,r,g,b)
+    placepixel(xpix-2,ypix,r,g,b)
+    placepixel(xpix-2,ypix+1,r,g,b)
+    placepixel(xpix+2,ypix-1,r,g,b)
+    placepixel(xpix+2,ypix,r,g,b)
+    placepixel(xpix+2,ypix+1,r,g,b)
+    placepixel(xpix-1,ypix-2,r,g,b)
+    placepixel(xpix-1,ypix+2,r,g,b)
+    placepixel(xpix,ypix-2,r,g,b)
+    placepixel(xpix,ypix+2,r,g,b)
+    placepixel(xpix+1,ypix-2,r,g,b)
+    placepixel(xpix+1,ypix+2,r,g,b)
+
+def module5(xpix,ypix,r,g,b):
+    placepixel(xpix-2,ypix-2,r,g,b)
+    placepixel(xpix-2,ypix-1,r,g,b)
+    placepixel(xpix-2,ypix,r,g,b)
+    placepixel(xpix-2,ypix+1,r,g,b)
+    placepixel(xpix-2,ypix+2,r,g,b)
+    placepixel(xpix+2,ypix-2,r,g,b)
+    placepixel(xpix+2,ypix-1,r,g,b)
+    placepixel(xpix+2,ypix,r,g,b)
+    placepixel(xpix+2,ypix+1,r,g,b)
+    placepixel(xpix+2,ypix+2,r,g,b)
+    placepixel(xpix-1,ypix-2,r,g,b)
+    placepixel(xpix-1,ypix+2,r,g,b)
+    placepixel(xpix,ypix-2,r,g,b)
+    placepixel(xpix,ypix+2,r,g,b)
+    placepixel(xpix+1,ypix-2,r,g,b)
+    placepixel(xpix+1,ypix+2,r,g,b)
+    
+def module6(xpix,ypix,r,g,b):
+    placepixel(xpix-2,ypix-1,r,g,b)
+    placepixel(xpix-2,ypix,r,g,b)
+    placepixel(xpix-2,ypix+1,r,g,b)
+    placepixel(xpix+2,ypix-1,r,g,b)
+    placepixel(xpix+2,ypix,r,g,b)
+    placepixel(xpix+2,ypix+1,r,g,b)
+    placepixel(xpix-1,ypix-2,r,g,b)
+    placepixel(xpix-1,ypix+2,r,g,b)
+    placepixel(xpix,ypix-2,r,g,b)
+    placepixel(xpix,ypix+2,r,g,b)
+    placepixel(xpix+1,ypix-2,r,g,b)
+    placepixel(xpix+1,ypix+2,r,g,b)
+
+
+def modular_rectangle(leftcol,upperrow,height,width,distance,r,g,b):
+    for i in range(leftcol,leftcol+width,distance):
+        for j in range(upperrow,upperrow+height,distance):
+            k = random.randrange(0,7)
+            if k == 1:
+                placepixel(i,j,r,g,b)
+            if k == 2:
+                module1(i,j,r,g,b)
+            if k == 3:
+                module2(i,j,r,g,b)
+            if k == 4:
+                module3(i,j,r,g,b)
+            if k == 5:
+                module4(i,j,r,g,b)
+            if k == 6:
+                module5(i,j,r,g,b)
+            if k == 7:
+                module6(i,j,r,g,b)
+
+
+
+
+def circleprob(centerx,centery,radius,thickness,prob_rem,r,g,b):
+    pixels = []
+    for i in range(centerx-radius,centerx+radius):
+        for j in range(centery-radius,centery+radius):
+            if (i-centerx)**2 + (j-centery)**2 < radius**2:
+                disttocenter = int(np.sqrt((i-centerx)**2 + (j-centery)**2))
+                if disttocenter > radius-thickness:
+                    pixels.append((i,j))
+    i = 0
+    pixels_to_rem = int(len(pixels)*(prob_rem/100))
+    print(len(pixels))
+    print(pixels_to_rem)
+    while i < pixels_to_rem:
+        j = random.randrange(0,len(pixels))
+        pixels.pop(j)
+        i += 1
+    for entry in pixels:
+        placepixel(entry[0],entry[1],r,g,b)
+
+
+
+def diffuse_sphere(centerx,centery,radius):
+    for i in range(0,radius):
+        circleprob(centerx,centery,i,2,int(((np.sin(i/15))**2)*100),255,255,255)
+
+
+clearcanvasfun2()
+diffuse_sphere(256,256,200)
 
 #placepixel(400,400,255,0,0)
 #square(100,300,100,300,0,255,0)
 #clearcanvas()
 #experiment2(128,128,255,255,255,1000000)
-clearcanvasfun2()
+#clearcanvasfun2()
 #verticalThickLineSlice(200,200,15,0,0,255)
 #horizontalThickLineSlice(300,300,29,0,255,0)
 #experiment3(300,300,100000)
@@ -358,18 +491,3 @@ clearcanvasfun2()
 
 
 #randomThickLine(256,256,5,40,10000,200,0,100)
-
-
-
-nightsky(8000)
-experiment3(100,100,100000)
-experiment3(100,200,100000)
-experiment3(300,300,100000)
-experiment3(200,100,100000)
-experiment3(300,300,100000)
-experiment3(100,100,100000)
-experiment3(100,200,100000)
-experiment3(300,300,100000)
-experiment3(200,100,100000)
-experiment3(300,300,100000)
-
