@@ -10,7 +10,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ip = '192.168.2.115'
 s.connect((ip,1337))
 
-canvas_size = 512
+canvas_size = 1024
 
 #comment or something it soedhen hurht
 
@@ -288,7 +288,15 @@ def clearcanvasfun2():
     pixellist.append((256,256))
     for entry in pixellist:
         squareWithCenter(entry[0],entry[1],53,0,0,0)
-    
+
+
+def circle(centerx,centery,radius,r,g,b):
+    pixels = []
+    for i in range(centerx-radius,centerx+radius):
+        for j in range(centery-radius,centery+radius):
+            if (i-centerx)**2 + (j-centery)**2 < radius**2:
+                placepixel(i,j,r,g,b)
+
 def circlecontour(centerx,centery,radius,thickness,r,g,b):
     pixels = []
     for i in range(centerx-radius,centerx+radius):
@@ -472,8 +480,166 @@ def diffuse_sphere(centerx,centery,radius):
         circleprob(centerx,centery,i,2,int(((np.sin(i/15))**2)*100),255,255,255)
 
 
-clearcanvasfun2()
-diffuse_sphere(256,256,200)
+
+def field_lines(dist):
+    sources = [(300,300),(400,100),(100,300),(500,150)]
+    pixellist = []
+    for i in range(0,512):
+        for j in range(0,512):
+            total_dist = 0
+            for source in sources:
+                dist_to_source = int(np.sqrt((i-source[0])**2+(j-source[1])**2))
+                total_dist += dist_to_source
+            pixellist.append((total_dist,i,j))
+    for pixel in pixellist:
+        if pixel[0]%dist == 0 or pixel[0]%dist == 1:
+            placepixel(pixel[1],pixel[2],255,255,255)
+
+
+def field_lines2():
+    sources = [(0,0),(400,100)]
+    pixellist = []
+    for i in range(0,512):
+        if i == 0:
+            continue
+        if i == 400:
+            continue
+        for j in range(0,512):
+            total_dist = 0
+            for source in sources:
+                dist_to_source = ((i-source[0]+0.0001)**2+(j-source[1]+0.0001)**2)
+                total_dist += dist_to_source
+            pixellist.append((total_dist,i,j))
+    for i in range(0,1000):
+        print(pixellist[i])
+    for pixel in pixellist:
+        placepixel(pixel[1],pixel[2],int(pixel[0]),int(pixel[0]),int(pixel[0]))
+
+
+            
+
+
+#Adventure into line algorithms
+
+def plotLineLow(x0,y0,x1,y1,r,g,b):
+    dx = x1 - x0
+    dy = y1 - y0
+    yi = 1
+    if dy < 0:
+        yi = -1
+        dy = -dy
+    D = (2 * dy) - dx
+    y = y0
+
+    for x in range(x0,x1):
+        placepixel(x,y,r,g,b)
+        if D > 0:
+            y = y + yi
+            D = D + (2 * (dy - dx))
+        else:
+            D = D + 2*dy
+
+
+def plotLineHigh(x0,y0,x1,y1,r,g,b):
+    pixellist = []
+    dx = x1 - x0
+    dy = y1 - y0
+    xi = 1
+    if dx < 0:
+        xi = -1
+        dx = -dx
+    D = (2 * dx) - dy
+    x = x0
+
+    for y in range(y0,y1):
+        placepixel(x,y,r,g,b)
+        pixellist.append((x,y))
+        if D > 0:
+            x = x + xi
+            D = D + (2 * (dx - dy))
+        else:
+            D = D + 2*dx
+    
+
+
+def plotLine(x0,y0,x1,y1,r,g,b):
+    if abs(y1 - y0) < abs(x1 - x0):
+        if x0 > x1:
+            plotLineLow(x1,y1,x0,y0,r,g,b)
+        else:
+            plotLineLow(x0,y0,x1,y1,r,g,b)
+    else:
+        if y0 > y1:
+            plotLineHigh(x1,y1,x0,y0,r,g,b)
+        else:
+            plotLineHigh(x0,y0,x1,y1,r,g,b)
+
+
+
+def circle_prob_radial_lines(centerx,centery,radius,thickness,prob_rem,r,g,b):
+    pixels = []
+    for i in range(centerx-radius,centerx+radius):
+        for j in range(centery-radius,centery+radius):
+            if (i-centerx)**2 + (j-centery)**2 < radius**2:
+                disttocenter = int(np.sqrt((i-centerx)**2 + (j-centery)**2))
+                if disttocenter > radius-thickness:
+                    pixels.append((i,j))
+    i = 0
+    pixels_to_rem = int(len(pixels)*(prob_rem/100))
+    print(len(pixels))
+    print(pixels_to_rem)
+    while i < pixels_to_rem:
+        j = random.randrange(0,len(pixels))
+        pixels.pop(j)
+        i += 1
+    for entry in pixels:
+        plotLine(centerx,centery,entry[0],entry[1],r,g,b)
+
+
+def equilateralTriangle(xcenter,ycenter,side_length,orientation,r,g,b):
+    if orientation == "d":
+        base_height = ycenter - int((np.sqrt(3)/4)*side_length)
+        top_height = ycenter + int((np.sqrt(3)/4)*side_length)
+        plotLine(xcenter-int(side_length/2),base_height,xcenter+int(side_length/2),base_height,r,g,b)
+        plotLine(xcenter-int(side_length/2),base_height,xcenter,top_height,r,g,b)
+        plotLine(xcenter+int(side_length/2),base_height,xcenter,top_height,r,g,b)
+    if orientation == "u":
+        base_height = ycenter + int((np.sqrt(3)/4)*side_length)
+        bottom_height =  ycenter - int((np.sqrt(3)/4)*side_length)
+        plotLine(xcenter-int(side_length/2),base_height,xcenter+int(side_length/2),base_height,r,g,b)
+        plotLine(xcenter-int(side_length/2),base_height,xcenter,bottom_height,r,g,b)
+        plotLine(xcenter+int(side_length/2),base_height,xcenter,bottom_height,r,g,b)
+
+def hexagon(xcenter,ycenter,side_length,r,g,b):
+    var = int((np.sqrt(3)/4)*side_length)
+    plotLine(xcenter-int(var/2),ycenter-var,xcenter+int(var/2),ycenter-var,r,g,b)
+    plotLine(xcenter-int(var/2),ycenter+var,xcenter+int(var/2),ycenter+var,r,g,b)
+    plotLine(xcenter-int(var/2),ycenter-var,xcenter-var,ycenter,r,g,b)
+    plotLine(xcenter-var,ycenter,xcenter-int(var/2),ycenter+var,r,g,b)
+    plotLine(xcenter+int(var/2),ycenter-var,xcenter+var,ycenter,r,g,b)
+    plotLine(xcenter+var,ycenter,xcenter+int(var/2),ycenter+var,r,g,b)
+
+
+
+clearcanvas()
+hexagon(512,512,150,255,255,255)
+equilateralTriangle(512,312,200,"d",255,255,255)
+equilateralTriangle(512,312,201,"d",255,255,255)
+equilateralTriangle(512,312,202,"d",255,255,255)
+equilateralTriangle(512,312,203,"d",255,255,255)
+equilateralTriangle(512,312,204,"d",255,255,255)
+equilateralTriangle(512,302,150,"d",255,255,255)
+circle(512,298,4,255,255,255)
+circle(512,288,4,255,255,255)
+circle(512,308,4,255,255,255)
+plotLine(512,150,512,812,255,255,255)
+circle(512,800,5,255,255,255)
+circlecontour(512,780,10,2,255,255,255)
+circle(512,780,9,0,0,0)
+circle(512,512,20,255,255,255)
+circle(512,512,17,0,0,0)
+circlecontour(512,512,200,4,255,255,255)
+
 
 #placepixel(400,400,255,0,0)
 #square(100,300,100,300,0,255,0)
